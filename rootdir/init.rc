@@ -19,9 +19,9 @@ on early-init
 
 on init
 
-sysclktz 0
+    sysclktz 0
 
-loglevel 64
+    loglevel 64
 
 # setup the global environment
     export LD_LIBRARY_PATH /usr/libexec/droid-hybris/lib-dev-alog/:/vendor/lib:/system/lib
@@ -377,6 +377,8 @@ service ueventd /sbin/ueventd
     class core
     critical
     seclabel u:r:ueventd:s0
+# Not used by Mer
+    disabled
 
 service healthd /sbin/healthd
     class core
@@ -413,27 +415,32 @@ service adbd /sbin/adbd
 on property:ro.kernel.qemu=1
     start adbd
 
+# Mer will use a linux build of servicemanager eventually
 service servicemanager /system/bin/servicemanager
     class core
     user system
     group system
     critical
     onrestart restart healthd
-    onrestart restart zygote
-    onrestart restart media
-    onrestart restart surfaceflinger
-    onrestart restart drm
+#    onrestart restart zygote
+#    onrestart restart media
+#    onrestart restart surfaceflinger
+#    onrestart restart drm
 
 service vold /system/bin/vold
     class core
     socket vold stream 0660 root mount
     ioprio be 2
+    # Not used in Mer
+    disabled
 
 service netd /system/bin/netd
     class main
     socket netd stream 0660 root system
     socket dnsproxyd stream 0660 root inet
     socket mdns stream 0660 root system
+    # Not used in Mer
+    disabled
 
 service debuggerd /system/bin/debuggerd
     class main
@@ -445,30 +452,36 @@ service ril-daemon /system/bin/rild
     user root
     group radio cache inet misc audio log
 
+# Disabled in Mer - used only during porting atm
 service surfaceflinger /system/bin/surfaceflinger
     class main
     user system
     group graphics drmrpc
     onrestart restart zygote
+    disabled
 
+# Disabled in Mer
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
     socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
-    onrestart restart media
-    onrestart restart netd
+#    onrestart restart media
+#    onrestart restart netd
+    disabled
 
 service drm /system/bin/drmserver
     class main
     user drm
     group drm system inet drmrpc
 
+# Disabled in Mer
 service media /system/bin/mediaserver
     class main
     user media
     group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm
     ioprio rt 4
+    disabled
 
 service bootanim /system/bin/bootanimation
     class main
@@ -501,10 +514,13 @@ service mtpd /system/bin/mtpd
     disabled
     oneshot
 
+# disabled in Mer
 service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
     group keystore drmrpc
+    # Not used in Mer
+    disabled
 
 service dumpstate /system/bin/dumpstate -s
     class main
@@ -512,6 +528,7 @@ service dumpstate /system/bin/dumpstate -s
     disabled
     oneshot
 
-service sshd /system/bin/start-ssh
-    class main
-    disabled
+# Use Mer sshd
+#service sshd /system/bin/start-ssh
+#    class main
+#    disabled
