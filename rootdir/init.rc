@@ -517,11 +517,3 @@ service dumpstate /system/bin/dumpstate -s
 service sshd /system/bin/start-ssh
     class main
     disabled
-
-service mdnsd /system/bin/mdnsd
-    class main
-    user mdnsr
-    group inet net_raw
-    socket mdnsd stream 0660 mdnsr inet
-    disabled
-    oneshot
