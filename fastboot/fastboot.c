@@ -55,6 +55,8 @@
 #define O_BINARY 0
 #endif
 
+#define FLASH_PARAM_NOACTION "noaction"
+
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(*(a)))
 
 char cur_product[FB_RESPONSE_SZ + 1];
@@ -678,14 +680,28 @@ static int load_buf(transport_t *trans, const char *fname,
 static void flash_buf(const char *pname, struct fastboot_buffer *buf)
 {
     struct sparse_file **s;
+    char *parameters;
+    int parameters_len;
 
     switch (buf->type) {
         case FB_BUFFER_SPARSE:
             s = buf->data;
+            parameters_len = strlen(pname) + strlen(FLASH_PARAM_NOACTION) + 2;
+            parameters = malloc(parameters_len);
+            if (!parameters) {
+                die("%s: out of memory", __FUNCTION__);
+            }
+            snprintf(parameters, parameters_len, "%s:%s",
+                    pname, FLASH_PARAM_NOACTION);
             while (*s) {
                 int64_t sz64 = sparse_file_len(*s, true, false);
-                fb_queue_flash_sparse(pname, *s++, sz64);
+                if (*(s + 1)) {
+                    fb_queue_flash_sparse(parameters, *s++, sz64);
+                } else {
+                    fb_queue_flash_sparse(pname, *s++, sz64);
+                }
             }
+            free(parameters);
             break;
         case FB_BUFFER:
             fb_queue_flash(pname, buf->data, buf->sz);
