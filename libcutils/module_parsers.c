@@ -178,6 +178,9 @@ void free_alias_list(struct listnode *head)
     struct listnode *next = NULL;
     struct module_alias_node *alias = NULL;
 
+    if (!head)
+        return;
+
     list_for_each_safe(node, next, head)
     {
         alias = node_to_item(node, struct module_alias_node, list);
@@ -196,6 +199,9 @@ void free_black_list(struct listnode *head)
     struct listnode *node = NULL;
     struct listnode *next = NULL;
     struct module_blacklist_node *black = NULL;
+
+    if (!head)
+        return;
 
     list_for_each_safe(node, next, head)
     {
@@ -356,6 +362,8 @@ int module_parser(const char *file_name, int mode, struct listnode *head)
     } else if (mode == READ_MODULES_BLKLST) {
         state.parse_line = parse_line_module_blacklist;
         args_to_read = 2;
+    } else {
+        goto out;
     }
     for (;;) {
         int token = next_token(&state);
