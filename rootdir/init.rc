@@ -321,6 +321,8 @@ on boot
 # Set these so we can remotely update SELinux policy
     chown system system /sys/fs/selinux/load
     chown system system /sys/fs/selinux/enforce
+    # Allow system group to trigger vibrator
+    chmod 0664 /sys/class/timed_output/vibrator/enable
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
