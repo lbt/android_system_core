@@ -41,7 +41,7 @@ PIXELFLINGER_SRC_FILES +=  \
     codeflinger/x86/texturing.cpp
 
 LOCAL_C_INCLUDES := \
-    $(TOP)/dalvik/vm/compiler/codegen/x86/lightcg/libenc
+    $(TOP)/vendor/intel/hardware/apache-harmony
 
 LOCAL_STATIC_LIBRARIES += libenc
 endif
@@ -96,7 +96,7 @@ LOCAL_SRC_FILES := $(PIXELFLINGER_SRC_FILES)
 LOCAL_CFLAGS := $(PIXELFLINGER_CFLAGS) 
 ifeq ($(TARGET_ARCH),x86)
 LOCAL_C_INCLUDES := \
-    $(TOP)/dalvik/vm/compiler/codegen/x86/lightcg/libenc
+    $(TOP)/vendor/intel/hardware/apache-harmony
 LOCAL_STATIC_LIBRARIES += libenc
 endif
 include $(BUILD_STATIC_LIBRARY)
